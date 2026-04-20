@@ -43,7 +43,10 @@
             </div>
             <div class="hero-visual">
                 <div class="glass-panel main-dashboard-mockup">
-                    <div class="panel-header">Live Stadium Congestion</div>
+                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        Live Stadium Congestion
+                        <button class="btn btn-secondary" id="incidentBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Simulate Incident</button>
+                    </div>
                     <div class="mockup-map" id="heroMapAnim">
                         <!-- JS generated heatmap dots -->
                     </div>
@@ -90,17 +93,28 @@
                             <h4>🍔 Mega Burger Stall 4</h4>
                             <span class="status live">Live</span>
                         </div>
-                        <div class="q-details">
-                            <div class="q-stat">
-                                <span class="q-val">12<small>min</small></span>
+                        <div class="q-details" style="justify-content: space-around;">
+                            <div class="q-stat text-center">
+                                <span class="q-val" id="queueWaitVal">12<small>min</small></span>
                                 <span class="q-lbl">Est. Wait</span>
                             </div>
-                            <div class="q-stat">
-                                <span class="q-val">24</span>
-                                <span class="q-lbl">In Queue</span>
+                            <div class="q-stat text-center">
+                                <span class="q-val accent" id="queuePosVal">24</span>
+                                <span class="q-lbl">Your Position</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary w-100 mt-1">Play Trivia to skip 1 spot!</button>
+                        <div class="trivia-section mt-2">
+                            <button class="btn btn-glow w-100" id="playTriviaBtn">🎮 Play Trivia to skip 3 spots!</button>
+                            <div id="triviaGameBox" class="trivia-box fade-in" style="display: none;">
+                                <p style="font-weight: 600; margin-bottom: 1rem;">Which team won the championship in 2024?</p>
+                                <div style="display:flex; gap:0.5rem; flex-direction:column;">
+                                    <button class="btn btn-secondary w-100 trivia-ans">The Eagles</button>
+                                    <button class="btn btn-secondary w-100 trivia-ans" data-correct="true">The Tigers</button>
+                                    <button class="btn btn-secondary w-100 trivia-ans">The Panthers</button>
+                                </div>
+                            </div>
+                            <div id="triviaResultBox" class="alert-banner text-center fade-in" style="display: none; justify-content: center;"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="section-visual">
@@ -125,12 +139,18 @@
                 <span class="section-label">Immersive Wayfinding</span>
                 <h3>Google ARCore Navigation</h3>
                 <p class="max-w-m mx-auto">Hold up your phone and follow the floating arrows directly to your seat, the nearest empty restroom, or emergency exits.</p>
+                <div class="ar-controls mt-2" style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+                    <button class="btn btn-primary ar-dest-btn" data-name="Section 304" data-dist="150m" data-deg="0">🎫 Section 304</button>
+                    <button class="btn btn-secondary ar-dest-btn" data-name="Restroom" data-dist="45m" data-deg="45">🚪 Restroom</button>
+                    <button class="btn btn-secondary ar-dest-btn" data-name="Food Court" data-dist="80m" data-deg="-30">🍔 Food Court</button>
+                    <button class="btn btn-secondary ar-dest-btn" data-name="Exit" data-dist="200m" data-deg="180">🚪 Exit</button>
+                </div>
                 
                 <div class="ar-demo-container mt-2">
-                    <div class="phone-mockup">
+                    <div class="phone-mockup interactive-phone">
                         <div class="ar-view">
-                            <div class="ar-arrow">↑</div>
-                            <div class="ar-poi">Section 304<br>150m</div>
+                            <div class="ar-arrow" id="arArrow" style="transition: transform 0.5s ease;">↑</div>
+                            <div class="ar-poi fade-in" id="arPoiText">🎫<br>Section 304<br><span class="accent">150m</span></div>
                         </div>
                     </div>
                 </div>
@@ -233,25 +253,39 @@
                     <h3>Track Your Carbon Footprint</h3>
                     <p>Make sustainable choices and earn rewards. The system tracks transport methods and food packaging to calculate your event impact.</p>
                     <div class="impact-meter mt-2">
-                        <div class="meter-lbl">Your Green Score: <span class="eco-val">840 pts</span></div>
-                        <div class="meter-bar"><div class="meter-fill" style="width: 84%;"></div></div>
+                        <div class="meter-lbl" style="display:flex; justify-content:space-between;">
+                            <span>Your Green Score</span>
+                            <span class="eco-val" id="greenScoreVal" style="font-size:1.2rem; font-weight: 800;">840 pts</span>
+                        </div>
+                        <div class="meter-bar"><div class="meter-fill" id="greenScoreFill" style="width: 56%;"></div></div>
+                        <small class="text-secondary mt-1" style="display:block;">Reach 1000 pts for a free drink voucher!</small>
                     </div>
                 </div>
                 <div class="section-visual">
-                    <div class="glass-panel stats-panel">
-                        <div class="stat-box">
+                    <div class="glass-panel stats-panel interactive-stats">
+                        <div class="stat-box checkable eco-action" data-points="500">
                             <div class="stat-icon">🚆</div>
                             <div class="stat-info">
                                 <strong>Public Transport</strong>
                                 <span>+500 points</span>
                             </div>
+                            <div class="check-indicator"><div class="circle-empty"></div></div>
                         </div>
-                        <div class="stat-box">
+                        <div class="stat-box checkable eco-action" data-points="200">
                             <div class="stat-icon">🥗</div>
                             <div class="stat-info">
                                 <strong>Vegan Meal</strong>
                                 <span>+200 points</span>
                             </div>
+                            <div class="check-indicator"><div class="circle-empty"></div></div>
+                        </div>
+                        <div class="stat-box checkable eco-action" data-points="150">
+                            <div class="stat-icon">☕</div>
+                            <div class="stat-info">
+                                <strong>Reusable Cup</strong>
+                                <span>+150 points</span>
+                            </div>
+                            <div class="check-indicator"><div class="circle-empty"></div></div>
                         </div>
                     </div>
                 </div>
